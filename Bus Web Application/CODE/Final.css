@@ -1,0 +1,36 @@
+
+#upleft { 
+   width:1360px; 
+   height: 100px; 
+   background:white; 
+   float:left; 
+   margin-right:2px;
+   border-bottom-style:thin;
+   border-color:blue;
+ background-repeat:no-repeat;
+ background-image:url("image.jpg");
+
+
+}
+
+#upright { 
+
+   width:1000px; 
+   height:550px; 
+   background:white; 
+   float:left;
+    border-bottom-style:thin;
+   
+ 
+   
+}
+#below { 
+   height:650px; 
+   width:1360px; 
+   background:white;
+    border-bottom-style:thin;
+   border-style:solid;
+
+   background-image:url("image.jpg");
+ background-repeat:no-repeat;
+}

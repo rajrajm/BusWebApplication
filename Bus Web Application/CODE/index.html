@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="Final.css">
+
+<meta http-equiv="Content-Type" content="text/javascript; charset=utf-8">
+  
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+  <title>PMPML-Web Application</title>
+  <link rel="stylesheet" href="https://js.arcgis.com/3.20/dijit/themes/claro/claro.css">    
+  <link rel="stylesheet" href="https://js.arcgis.com/3.20/esri/css/esri.css">
+
+
+  <!-- CSS STYLE WORK-->
+<style>
+	#h1{
+	position:absolute;
+	left:350px;
+		}
+		
+	
+
+
+ html ,body{ 
+ height: 100%; width: 100%; margin: 0; padding: 0; }
+    
+	#map{
+      padding:0;
+    }
+	
+	 .claro .dijitTooltipContainer {
+      background-image: none;
+      border:           1px solid #444444;
+      background-color: #444444;
+      color:            #FFFFFF;
+    }
+	
+	.claro .dijitTooltipConnector {
+      background-image: none;
+    }
+
+	#source{
+	
+	position:relative;
+	left:32px;
+	border: 2px solid green;
+    border-radius: 4px;
+	-webkit-border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    border-radius: 5px; 
+    border: 1px solid #848484; 
+    outline:0; 
+    height:25px; 
+    width: 250px;
+	}
+	
+	#destination{
+	
+	position:relative;
+	left:1px;
+	border: 2px solid green;
+    border-radius: 4px;
+	-webkit-border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    border-radius: 5px; 
+    border: 1px solid #848484; 
+    outline:0; 
+    height:25px; 
+    width: 250px;
+	}
+	
+	#route{
+	
+	position:relative;
+	left:12px;
+	border: 2px solid green;
+    border-radius: 4px;
+	-webkit-border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    border-radius: 5px; 
+    border: 1px solid #848484; 
+    outline:0; 
+    height:25px; 
+    width: 700px;
+	}
+	
+	.button {
+display: inline-block;
+  padding: 7px 12px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color:#6A5ACD ;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 9px #999;
+  position:relative;
+	left:80px;
+}
+.button:hover {background-color: #3e8e41}
+
+.button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+	
+	#search {
+         display: block;
+         position: absolute;
+         z-index: 2;
+         top: 25px;
+         left: 75px;
+	}
+	
+	#image{
+position:absolute;
+	left:1195px;
+
+	}
+	
+	#punedarshan{
+	position:absolute;
+	left:1080px;
+	}
+	
+	body {
+    font-family: "Lato", sans-serif;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover, .offcanvas a:focus{
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+#main {
+    transition: margin-left .5s;
+    padding: 16px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+ #LocateButton {
+      position: absolute;
+      top: 95px;
+      left: 20px;
+      z-index: 50;
+    }
+#logo{
+	position:absolute;
+	left:1150px;
+	height:85px;
+	width:90px;
+	}  	
+	  
+	  
+</style>
+<script src="https://js.arcgis.com/3.20/"></script>
+
+<!--  JAVASCRIPT WORK HERE-->
+<script type="text/javascript"> 
+
+    require([
+	"dojo/dom-construct","dojo/parser","esri/Color","esri/config",
+	"dojox/charting/themes/GreySkies","esri/map","esri/arcgis/utils", "esri/dijit/Popup",
+      "esri/layers/FeatureLayer","dijit/layout/BorderContainer","dijit/layout/ContentPane","dijit/TitlePane",
+      "esri/tasks/GeometryService","esri/dijit/Search","esri/layers/ArcGISDynamicMapServiceLayer","esri/tasks/QueryTask","esri/tasks/query","esri/symbols/SimpleMarkerSymbol","esri/InfoTemplate","dojo/_base/Color","dojo/dom","dojo/on",
+	  "esri/dijit/LocateButton",
+       "dojo/domReady!"
+    ], function(
+       domConstruct, parser, Color, esriConfig,GreySkies,Map,utils,Popup, FeatureLayer,BorderContainer,ContentPane,
+      TitlePane, GeometryService,Search,ArcGISDynamicMapServiceLayer,QueryTask,Query,SimpleMarkerSymbol,InfoTemplate,Color,dom,on,LocateButton
+      
+    ) {
+     parser.parse();
+	  esriConfig.defaults.geometryService = new GeometryService("https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
+    
+		Dom=dom;
+      map = new Map("map", {
+      basemap: "streets",   
+	  center: [73.85,18.52],//pune
+	  zoom: 12,
+		
+      });
+	  
+	  //FOR GEOLOCATOR
+	   geoLocate = new LocateButton({
+        map: map
+      }, "LocateButton");
+      geoLocate.startup();
+	  
+	  //FOR SEARCH
+    search = new Search({
+  map: map
+},"search");
+search.startup();
+	
+
+
+//Initialize infotemplate//
+infoTemplate=new InfoTemplate("${Stop_Name}","Stop_Name : ${Stop_Name}<br/>, Stop_Nam_1 : ${Stop_Nam_1}<br/> Route_Type : ${Route_Type}<br/> Route : ${Route}<br/>" );
+
+//Create symbol for selected feature//
+symbol = new SimpleMarkerSymbol();
+symbol.setStyle(SimpleMarkerSymbol.STYLE_SQUARE);
+symbol.setSize(15);
+symbol.setColor(new Color([201, 0, 19]));
+
+symbol1 = new SimpleMarkerSymbol();
+symbol1.setStyle(SimpleMarkerSymbol.STYLE_CIRCLE);
+symbol1.setSize(15);
+symbol1.setColor(new Color([255,255,0,0.5]));
+
+	 featureLayer = new FeatureLayer("https://services8.arcgis.com/pVpEFfpKs7AxsTgP/arcgis/rest/services/BusStops/FeatureServer/0",
+          {
+            mode: FeatureLayer.MODE_ONDEMAND,
+            infoTemplate: infoTemplate,
+            outFields: ["*"]
+          });
+		  featureLayer.setSelectionSymbol(symbol);
+	
+
+
+map.addLayer(featureLayer);
+
+
+//Initialize query task//
+//alert("Query task Initialized");
+queryTask=new QueryTask("https://services8.arcgis.com/pVpEFfpKs7AxsTgP/arcgis/rest/services/BusStops/FeatureServer/0");
+
+
+ query=new Query();
+
+query.outFields=["Stop_Name","Stop_Nam_1","Route_Type","Route", "Stop_Seq"];
+
+Dom.byId("source").value='Kondhwa Bk';
+Dom.byId("destination").value='Kothrud Depot';
+src=Dom.byId("source").value;
+dest=Dom.byId("destination").value;
+queryString=" Stop_Name= '"+ src + "' or Stop_Name= '" + dest + "'";
+query.where = queryString;
+
+//BUTTON CLICK//
+featureLayer.selectFeatures(query,
+ esri.layers.FeatureLayer.SELECTION_NEW);
+on(dom.byId("runQuery"), "click", executeQueryTask);
+
+query1=new Query();
+
+query1.outFields=["Stop_Name","Stop_Nam_1","Route_Type","Route"];
+Dom.byId("route").value='100-D';
+route=Dom.byId("route").value;
+queryString="Route='"+route;
+query1.where = queryString;
+
+featureLayer.selectFeatures(query1,
+ esri.layers.FeatureLayer.SELECTION_NEW);
+on(dom.byId("runQuery1"), "click", executeQueryTask1);
+
+ });  
+
+
+function executeQueryTask() {
+//set query based on what user typed in for stops;
+src=Dom.byId("source").value;
+dest=Dom.byId("destination").value;
+queryString=" Stop_Name= '"+ src + "' or Stop_Name= '" + dest + "'";
+query.where = queryString;
+featureLayer.queryFeatures(query,showResults,checkerror)
+
+}
+
+function executeQueryTask1() {
+route=Dom.byId("route").value;
+queryString="Route='"+route+"'";
+query1.where = queryString;
+featureLayer.queryFeatures(query1,showResults1,checkerror)
+}
+
+//Create function to show results//
+function showResults(featureSet) {
+    //remove all graphics on the maps graphics layer
+    map.graphics.clear();
+    //Performance enhancer - assign featureSet array to a single variable.
+    var resultFeatures = featureSet.features;
+    //Loop through each feature returned
+    console.log("feature count" + resultFeatures.length);
+    //lets gate valid routes 
+    var vr=GetValidRoutes(src, dest, resultFeatures);
+    if(vr.length==0){
+      alert("No direct Bus route Available");
+      return;
+    }
+    //set it to the select
+    var RouteSelect = document.getElementById('route');
+    //remove all existing options
+    removeOptions(RouteSelect)
+    for (var i = vr.length - 1; i >= 0; i--) {
+      var route=vr[i];
+      //add this route as option
+      RouteSelect.add(new Option(route["r"]));
+    };
+
+    
+    function removeOptions(selectbox)
+      {
+          var i;
+          for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
+          {
+              selectbox.remove(i);
+          }
+      }
+}
+
+//function to calculate the valid routes
+function GetValidRoutes(s, d, stops){
+  //First we Divide the stops according to src & dest
+  let srcStops=[], destStops=[];
+  for(var i=0; i<stops.length; i++){
+    if(stops[i].attributes.Stop_Name===s){
+      srcStops.push({"r":stops[i].attributes.Route, "sq":stops[i].attributes["Stop_Seq"]});
+      continue;
+    }
+
+    //it could be dest as well
+    if(stops[i].attributes.Stop_Name===d){
+      destStops.push({"r":stops[i].attributes.Route, "sq":stops[i].attributes["Stop_Seq"]});
+      continue;
+    }
+
+  }
+  //We have categorized the stops
+
+  //lets create one Bag for all the routes
+  let RoutesBag=[], routesList=[];
+
+  //first loop over the src stops
+  for (var j = srcStops.length - 1; j >= 0; j--) {
+    var stop=srcStops[j];
+    //see if this route name is the routeList
+    var stopIndex=routesList.indexOf(stop["r"]);
+    if(stopIndex>-1){
+      //we have this in the list
+
+      //hence add this as the src_seq
+      RoutesBag[stopIndex].src_seq=stop["sq"];
+    }else{
+      //it is not Hence need to add it both the arrays
+      routesList.push(stop["r"]);
+      RoutesBag.push({"r":stop["r"],"src_seq":stop["sq"]});
+    }
+  }
+
+    //Now loop over the dest stops and put their sequence
+    for (var j = destStops.length - 1; j >= 0; j--) {
+    var stop=destStops[j];
+    //see if this route name is the routeList
+    var stopIndex=routesList.indexOf(stop["r"]);
+    if(stopIndex>-1){
+      //we have this in the list
+
+      //hence add this as the src_seq
+      RoutesBag[stopIndex].dest_seq=stop["sq"];
+    }else{
+      //We need to add it
+      routesList.push(stop["r"]);
+      RoutesBag.push({"r":stop["r"],"dest_seq":stop["sq"]});
+    }
+
+  }
+
+
+    /*Now we need to filter the records in the RouteBag, 
+    And return only those where src_sq<dest_seq */
+  var result=RoutesBag.filter(function (el) {return el.src_seq<el.dest_seq;});
+
+  return result;
+
+}
+
+
+function showResults1(featureSet) {
+    //remove all graphics on the maps graphics layer
+    map.graphics.clear();
+    //Performance enhancer - assign featureSet array to a single variable.
+    var resultFeatures = featureSet.features;
+    //Loop through each feature returned
+
+    for (var i = 0, il = resultFeatures.length; i < il; i++) {
+        //Get the current feature from the featureSet.
+        //Feature is a graphic
+        var graphic = resultFeatures[i];
+        graphic.setSymbol(symbol1);
+
+        //Set the infoTemplate.resultFeatures
+        graphic.setInfoTemplate(infoTemplate);
+        
+        //Add graphic to the map graphics layer.
+        map.graphics.add(graphic);
+    }
+}
+
+function checkerror(err)
+{
+alert("error"+err);
+Console.log("error occured");
+
+}
+
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("main").style.marginLeft = "250px";
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginLeft= "0";
+}
+
+
+</script> 
+  
+<!--HTML WORK HERE-->
+<body class="claro">
+
+<div id="wholehtml">
+
+<div id="upleft">
+<h1 id="h1" font face="Times New Roman"><font color="orange"><b>Pune  Mahanagar  Parivahan  Mahamandal Ltd.<b></font></h1>
+<img id="logo" src="logo.png">
+
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="Aboutus.html">About US</a>
+  <a href="Rainbowbrt.html">BRT Info</a>
+  <a href="Passengersinfo.html">Passengers Info</a>
+  <a href="Contactus.html">Contact Us</a>
+</div>
+
+<div id="main">
+  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; MENU</span>
+</div>
+
+
+</body>
+</html> 
+
+
+
+
+</div>
+<div id="upright">
+
+ 
+  <div data-dojo-type="dijit/layout/BorderContainer" 
+       data-dojo-props="design:'headline', gutters:false" 
+       style="width:100%;height:100%;margin:0;">
+ 
+    <div id="map" 
+         data-dojo-type="dijit/layout/ContentPane" 
+         data-dojo-props="region:'center'" 
+         style="padding:0;">
+<div id="search"></div>
+<div id="LocateButton"></div>
+      <div style="position:absolute; right:20px; top:10px; z-Index:999;">
+        <div data-dojo-type="dijit/TitlePane" 
+             data-dojo-props="title:'Switch Basemap', closable:false, open:false">
+          <div data-dojo-type="dijit/layout/ContentPane" style="width:380px; height:280px; overflow:auto;">
+            <div id="basemapGallery"></div>
+			
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+
+
+<div id="below">
+
+<h3 align="center" style="margin-top:10%"></h3>
+
+<p align="center"><font color="orange"><u><h3>Enter  Source and  Destination</h3></u></font></p>
+<hr>
+<label for="source"><font color="orange" size="4">Source:</font>
+&nbsp;<input type="text" id="source" name="source" value="" size="20" placeholder="Enter source">
+<br>
+<br>
+<label for="destination"><font color="orange" size="4">Destination:</font>
+<input type="text" id="destination" value=""  size="15" placeholder="Enter destination">
+<br>
+<br>
+<input type="button" class="button" value="Get Route-ID"  id="runQuery">
+<br>
+<br>
+<br>
+<label for="Route"><font color="orange" size="4">Route-ID:</font>
+&nbsp;<!--<input type="text" id="route" value=""  size="20" placeholder="Enter route-Id">-->
+&nbsp;<select name="Route-ID" id="route" style="width:150px;"><option value="" selected="selected"></option></select>
+<br>
+<br>
+<input type="button" class="button" value="Get Direction"  id="runQuery1">
+<br>
+<br>
+<br>
+
+
+<input id="image" type="image" width="110" height="90" alt="Login" align="right" 
+       src="bt.png"  onClick="location.href='TIMETABLE.html'">
+<br>
+<input id="punedarshan" type="image" width="80" height="60" alt="Login" align="right" 
+src="pd3.png"  onClick="location.href='punedarshan.html'">
+</div>
+</div>
+
+
+</head>
+
+</body>
+</html>
